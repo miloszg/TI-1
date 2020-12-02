@@ -40,10 +40,20 @@ export default function SignIn() {
   const { control, handleSubmit } = useForm();
   const [register, setRegister] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
+
+  const returnUrl = () =>
+    register
+      ? "http://localhost:3000/api/v1/registration"
+      : "http://localhost:3000/api/v1/login";
+
   const onSubmit = (data) => {
-    axios.post("").then(() => {
-      setLoggedIn(true);
-      toast.success("Successfully logged in");
+    axios.post(returnUrl(), data).then((response) => {
+      if (response.statusText === "OK") {
+        setLoggedIn(true);
+        toast.success("Successfully logged in");
+      } else {
+        toast.success("Access denied");
+      }
     });
     console.log(data);
   };
@@ -157,10 +167,10 @@ export default function SignIn() {
                           id="age"
                         />
                       }
+                      defaultValue={22}
                       name="age"
                       type="number"
                       control={control}
-                      defaultValue=""
                     />
                   </Grid>
                 )}
@@ -181,7 +191,6 @@ export default function SignIn() {
                       }
                       name="pesel"
                       control={control}
-                      defaultValue=""
                     />
                   </Grid>
                 )}
@@ -261,21 +270,24 @@ export default function SignIn() {
                       }
                       name="country"
                       control={control}
-                      defaultValue=""
+                      defaultValue="Poland"
                     />
                   </Grid>
                 )}
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  className={classes.submit}
-                >
-                  {register ? "Sign Up" : "Sign In"}
-                </Button>
+                <Grid item xs={12}>
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    className={classes.submit}
+                  >
+                    {register ? "Sign Up" : "Sign In"}
+                  </Button>
+                </Grid>
                 <Grid item xs={12}>
                   <FormControlLabel
+                    style={{ paddingLeft: 15 }}
                     fullWidth
                     control={
                       <Checkbox
